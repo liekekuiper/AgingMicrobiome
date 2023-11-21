@@ -38,6 +38,9 @@ Install Woltka to be able to run the Web of Life
 pip install woltka
 ```
 
+$(basename $0) -d ./ -i INPUT
+
+
 Download the `PreProcessingShotgun.zip` file. 
 
 Run `PreprocessingShotgun.sbatch` 
