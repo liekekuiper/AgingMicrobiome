@@ -28,25 +28,23 @@ pip install q2-greengenes2
 Make a file `manifest` with a column `sample-id` and a column `absolute-filepath` with the sample ids and the paths to the **first reads** of each sample. 
 Download the `PreProcessing16S.zip` file. 
 
-Run `Preprocessing16S.sbatch` 
+Run `Preprocessing16S.sh` 
 
 ### Preprocessing Shotgun-data
 Make a file `manifest` with a column `sample-id` and a column `absolute-filepath` with the sample ids and the paths to each sample's **alligned reads**. 
+
+Download the `PreProcessingShotgun.zip` file. 
 
 Install Woltka to be able to run the Web of Life
 ```{bash}
 pip install woltka
 ```
+You also have to download the Web of Life: [http://ftp.microbio.me/pub/wol2/genomes/] (file named all.fna). Place this file into a directory wol2 within the directory where your files are located. 
 
-$(basename $0) -d ./ -i INPUT
-
-
-Download the `PreProcessingShotgun.zip` file. 
-
-Run `PreprocessingShotgun.sbatch` 
+Run `PreprocessingShotgun.sh` 
 
 ### GreenGenes2
 According to the GreenGenes2 harmonization, there are 3 options; choose the one suiting for your data:
 - 16S V4 data: Download, place in the same folder as preprocessed data, and run `closed_reference16SV4.sbatch` 
-- 16S data not V4: Download, place in the same folder as preprocessed data, and run `closed_reference16SNonV4.sbatch` 
-- Shotgun data: Download, place in the same folder as preprocessed data, and run `closed_referenceShotgun.sbatch` 
+- 16S data not V4: Download, place in the same folder as preprocessed data, and run `closed_reference16SNonV4.sbatch` and `taxonomic_table
+- Shotgun data: Download, place in the same folder as preprocessed data, and run `closed_referenceShotgun.sbatch` and `taxonomic_tableShotgun.sbatch` 
