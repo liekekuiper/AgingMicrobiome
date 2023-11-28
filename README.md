@@ -31,7 +31,7 @@ Download the `PreProcessing16S.zip` file.
 Run `Preprocessing16S.sh` 
 
 ### Preprocessing Shotgun-data
-Make a file `manifest` with a column `sample-id` and a column `absolute-filepath` with the sample ids and the paths to each sample's **alligned reads**. 
+Make a file `manifest` with a column `sample-id` and a column `absolute-filepath` with the sample ids and the paths to each sample's **QC'd reads**. 
 
 Download the `PreProcessingShotgun.zip` file. 
 
