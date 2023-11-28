@@ -45,6 +45,6 @@ Run `PreprocessingShotgun.sh`
 
 ### GreenGenes2
 According to the GreenGenes2 harmonization, there are 3 options; choose the one suiting for your data:
-- 16S V4 data: Download, place in the same folder as preprocessed data, and run `closed_reference16SV4.sbatch` 
-- 16S data not V4: Download, place in the same folder as preprocessed data, and run `closed_reference16SNonV4.sbatch` and `taxonomic_table
+- 16S V4 data: Download, place in the same folder as preprocessed data, and run `closed_reference16SV4.sbatch` and `taxonomic_table16SV4.sbatch`
+- 16S data not V4: Download `get_repset.py`, place in the same folder as preprocessed data, and run `closed_reference16SNonV4.sbatch` and `taxonomic_table16SNonV4.sbatch`
 - Shotgun data: Download, place in the same folder as preprocessed data, and run `closed_referenceShotgun.sbatch` and `taxonomic_tableShotgun.sbatch` 
