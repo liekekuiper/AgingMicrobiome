@@ -21,6 +21,7 @@ wget https://data.qiime2.org/distro/core/qiime2-2023.7-py38-linux-conda.yml
 conda env create -n qiime2-2023.7 --file qiime2-2023.7-py38-linux-conda.yml
 wget http://ftp.microbio.me/greengenes_release/2022.10/2022.10.taxonomy.asv.nwk.qza
 conda init bash
+source activate qiime2-2023.7
 pip install q2-greengenes2
 ```
 
