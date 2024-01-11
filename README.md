@@ -14,7 +14,7 @@ Data harmonization will take place using GreenGenes2. For both 16S- and shotgun-
 mkdir -p ~/miniconda3
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
 bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
-rm -rf ~/miniconda3/miniconda.sh
+PATH=$PATH:~/miniconda3/bin/
 conda update conda
 conda install wget
 wget https://data.qiime2.org/distro/core/qiime2-2023.7-py38-linux-conda.yml
