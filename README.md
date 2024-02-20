@@ -48,4 +48,48 @@ Run `PreprocessingShotgun.sh`
 According to the GreenGenes2 harmonization, there are 3 options; choose the one suiting for your data:
 - 16S V4 data: Download, place in the same folder as preprocessed data, and run `closed_reference16SV4.sbatch` and `taxonomic_table16SV4.sbatch`
 - 16S data not V4: Download `get_repset.py`, place in the same folder as preprocessed data, and run `closed_reference16SNonV4.sbatch` and `taxonomic_table16SNonV4.sbatch`
-- Shotgun data: Download, place in the same folder as preprocessed data, and run `closed_referenceShotgun.sbatch` and `taxonomic_tableShotgun.sbatch` 
+- Shotgun data: Download, place in the same folder as preprocessed data, and run `closed_referenceShotgun.sbatch` and `taxonomic_tableShotgun.sbatch`
+
+## Associations with aging phenotypes
+Now using the previously created GreenGenes2 called data `feature.table.gg2-2022.10.qza` and taxonomy file `df.gg2.taxonomy.qza` we will run the analyses with the aging phenotypes.
+
+### Metadata
+The R-script is under the assumption that metadata is a separate .txt document named metafile `metadata_agingmicrobiome.txt` 
+Make sure variables are coded according to the analysis plan:
+* sex: "men" and "women";
+* ppump: proton-pump inhibitor usage, if participant indicates use 1, not 0;
+* metfor: metformin usage, if participant indicates use 1, not 0;
+* statin: stating usage, if participant indicates use 1, not 0;
+* bmi: numeric, as many digits as available;
+* race: as factor, "white" will be reference
+* dietscore: numeric, as many digits as available
+* fiber: numeric, as many digits as available
+
+### Models
+Change models in `mods_agingmicrobiome.txt` to let them include study-specific variables such as Site.
+
+### Outcomes
+Remove outcomes your cohort does not participate in in `outs_agingmicrobiome.txt` 
+
+To clarify:
+* age: chronological age
+* fi: frailty index
+* cont: continuous frailty phenotype
+* mortality: all-cause mortality
+
+### Subset
+Remove from the `subsets_agingmicrobiome.txt` file subsets your cohort does not take part in.
+
+To clarify:
+* all: all participants
+* men: men
+* women: women
+* age_1: participants with a chronological age >= 18 & chronological age < 40
+* age_2: participants with a chronological age >= 40 & chronological age < 50
+* age_3: participants with a chronological age >= 50 & chronological age < 60
+* age_4: participants with a chronological age >= 60 & chronological age < 70
+* age_5: participants with a chronological age >= 70)
+
+### IMPORTANT
+Please change your cohort name in `cohort.txt` and send the document with study participants with descriptives and your used schripts back to l.m.kuiper[at]erasmusmc.nl
+
