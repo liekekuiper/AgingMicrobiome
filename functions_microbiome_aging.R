@@ -28,8 +28,13 @@ phy_subset <- function(physeq, subinfo) {
   } else {
     c("sex", "ppump", "metfor", "statin", "race")
   }
-  
-  sample_data(df)[, factor_names] <- lapply(sample_data(df)[, factor_names], factor)
+   for (factor_name in factor_names) {
+    if (factor_name == "sex") {
+      df$sex <- relevel(factor(df$sex), ref = "men")
+    } else {
+      df[[factor_name]] <- factor(df[[factor_name]], levels = c("0", "1"))
+    }
+  }
   return(df)
 }
 
