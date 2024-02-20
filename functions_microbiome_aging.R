@@ -31,7 +31,9 @@ phy_subset <- function(physeq, subinfo) {
    for (factor_name in factor_names) {
     if (factor_name == "sex") {
       df$sex <- relevel(factor(df$sex), ref = "men")
-    } else {
+    } else if (factor_name == "race"){
+      df$race <- relevel(factor(df$race), ref = "white")
+    }else {
       df[[factor_name]] <- factor(df[[factor_name]], levels = c("0", "1"))
     }
   }
