@@ -88,8 +88,70 @@ To clarify:
 * age_2: participants with a chronological age >= 40 & chronological age < 50
 * age_3: participants with a chronological age >= 50 & chronological age < 60
 * age_4: participants with a chronological age >= 60 & chronological age < 70
-* age_5: participants with a chronological age >= 70)
+* age_5: participants with a chronological age >= 70
 
 ### IMPORTANT
-Please change your cohort name in `cohort.txt` and send the document with study participants with descriptives and your used schripts back to l.m.kuiper[at]erasmusmc.nl
+Please change your cohort name in `cohort.txt` 
+
+### Send back
+Please include a README Word file with the following study descriptive information:
+General	
+* Named individuals with contact details who should be considered in future publications, including: analysts and PIs (if possible indicate their role in your study, so that we can direct any queries to the appropriate person)
+*	Brief description of your study.
+*	Acknowledgements for your study, including funding sources
+
+For analytic sample
+*	Sample size
+*	N of women (%)
+*	N participants living in the same household as other study participants (%)
+*	Mean age (years ± SD)
+*	N PPI users (%)
+*	N participants with missing information on PPI use (%)
+*	N metformin users (%)
+*	N participants with missing information on metformin use (%)
+*	N lipid lowering medication users (%)
+*	N participants with missing information on metformin use (%)
+*	Mean BMI (± SD)
+*	N participants with missing information on BMI
+*	N per ethnic subgroup (%)
+*	N participants with missing information on ethnicity
+*	Mean fiber intake (± SD)
+*	N participants with missing information on fiber intake
+*	Mean diet score (± SD)
+*	N participants with missing information on diet score
+
+For microbiome data
+*	Sample collection.
+*	Microbial DNA isolation
+*	DNA sequencing
+
+For phenotypes
+*	Chronological age:
+  *	Minimal age
+  *	Maximum age
+  *	Median age
+  *	IQR age
+*	Frailty index
+  *	List of variables included in frailty index
+  *	Mean frailty index (± SD)
+  *	Minimal frailty index
+  *	Maximum frailty index
+  *	Median frailty index
+  *	IQR frailty index
+*	Continuous frailty phenotype
+  *	Mean continuous frailty phenotype (± SD)
+  *	Minimal continuous frailty phenotype
+  *	Maximum continuous frailty phenotype
+  *	Median continuous frailty phenotype
+  *	IQR continuous frailty phenotype 
+*	All-cause mortality
+  *	Number of deaths (%)
+  *	Number of people lost to follow-up (%)
+  *	Mean follow-up time (± SD)
+  *	Minimal follow-up time
+  *	Maximum follow-up time
+  *	Median follow-up time
+  *	IQR follow-up time
+
+**Send the document with study participants with descriptives and your used scripts back to l.m.kuiper[at]erasmusmc.nl**
 
