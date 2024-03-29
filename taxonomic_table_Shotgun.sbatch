@@ -2,7 +2,7 @@
 #SBATCH -N 1
 #SBATCH -c 16
 #SBATCH --time 24:00:00
-#SBATCH --mem 64gb
+#SBATCH --mem 64G
 #SBATCH -J  taxonomy_from_table
 
 source activate qiime2-2023.7
@@ -14,7 +14,7 @@ set -e
 
 #qiime 
 qiime greengenes2 taxonomy-from-table \
+     --i-reference-taxonomy 2022.10.taxon
      --i-reference-taxonomy 2022.10.taxonomy.asv.nwk.qza \
-     --i-table df.gg2-2022.10-cref99.qza\
+     --i-table feature.table.gg2-2022.10.qza \
      --o-classification df.gg2.taxonomy.qza
-
