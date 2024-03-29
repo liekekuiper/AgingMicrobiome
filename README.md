@@ -46,9 +46,16 @@ Run `PreprocessingShotgun.sh`
 
 ### GreenGenes2
 According to the GreenGenes2 harmonization, there are 3 options; choose the one suiting for your data:
-- 16S V4 data: Download, place in the same folder as preprocessed data, and run `closed_reference16SV4.sbatch` and `taxonomic_table16S.sbatch`
-- 16S data not V4: Download `get_repset.py`, place in the same folder as preprocessed data, get full backbone of Woltka ```{bash} wget http://ftp.microbio.me/greengenes_release/2022.10/2022.10.backbone.full-length.fna.qza``` and run `closed_reference16SNonV4.sbatch` and `taxonomic_table16S.sbatch`
-- Shotgun data: Download, place in the same folder as preprocessed data, and run `closed_referenceShotgun.sbatch` and `taxonomic_tableShotgun.sbatch`
+- 16S V4 data: 
+	Download, place in the same folder as preprocessed data, and run `closed_reference16SV4.sbatch` and `taxonomic_table16S.sbatch`
+- 16S data not V4: 
+	Get full backbone of Web of Life
+	 ```{bash}
+	wget http://ftp.microbio.me/greengenes_release/2022.10/2022.10.backbone.full-length.fna.qza
+	``` 
+	Download `get_repset.py`, place in the same folder as preprocessed data, and run `closed_reference16SNonV4.sbatch` and `taxonomic_table16S.sbatch`
+- Shotgun data: 
+	Download, place in the same folder as preprocessed data, and run `closed_referenceShotgun.sbatch` and `taxonomic_tableShotgun.sbatch`
 
 ## Associations with aging phenotypes
 Now using the previously created GreenGenes2 called data `feature.table.gg2-2022.10.qza` and taxonomy file `df.gg2.taxonomy.qza` we will run the analyses with the aging phenotypes.
