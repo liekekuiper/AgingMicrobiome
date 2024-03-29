@@ -45,7 +45,7 @@ You also have to download the Web of Life: [http://ftp.microbio.me/pub/wol2/geno
 Run `PreprocessingShotgun.sh` 
 
 ### GreenGenes2
-According to the GreenGenes2 harmonization, there are 3 options; choose the one suiting for your data:
+Following the GreenGenes2 harmonization, there are three options available. Please select the one that best suits your data.
 - 16S V4 data: 
 	Download, place in the same folder as preprocessed data, and run `closed_reference16SV4.sbatch` and `taxonomic_table16S.sbatch`
 - 16S data not V4: 
