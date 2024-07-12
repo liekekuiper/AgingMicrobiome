@@ -61,7 +61,10 @@ Following the GreenGenes2 harmonization, there are three options available. Plea
 Now using the previously created GreenGenes2 called data `feature.table.gg2-2022.10.qza` and taxonomy file `df.gg2.taxonomy.qza` we will run the analyses with the aging phenotypes.
 
 ### Metadata
-The R-script is under the assumption that metadata is a separate .txt document named metafile `metadata_agingmicrobiome.txt` 
+The Python-script is under the assumption that metadata is a tab-separate .txt document. 
+
+Use submit_analyses.sbatch to start te analyses
+
 Make sure variables are coded according to the analysis plan:
 * sex: "men" and "women";
 * ppump: proton-pump inhibitor usage, if participant indicates use 1, not 0;
