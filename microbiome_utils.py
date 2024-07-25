@@ -25,13 +25,13 @@ def find_complete(metadata, model, subset):
         final_df = meta_df[meta_df['sex'] == 'women']
     elif subset == 'age_1':
         final_df = meta_df[(meta_df['age'] >= 18) & (meta_df['age'] < 40)]
-    elif subset == 'age_2'
+    elif subset == 'age_2':
         final_df = meta_df[(meta_df['age'] >= 40) & (meta_df['age'] < 50)]
-    elif subset == 'age_3'
+    elif subset == 'age_3':
         final_df = meta_df[(meta_df['age'] >= 50) & (meta_df['age'] < 60)]
-    elif subset == 'age_4'
+    elif subset == 'age_4':
         final_df = meta_df[(meta_df['age'] >= 60) & (meta_df['age'] < 70)]
-    elif subset == 'age_5'
+    elif subset == 'age_5':
         final_df = meta_df[(meta_df['age'] >= 70)]
 
 # Determine factor names
@@ -111,7 +111,7 @@ def process_beta_diversities(table_ar, genus_table_ar, tree_ar, threads, metadat
 def process_alpha_diversities(table_ar, genus_table_ar, tree_ar, threads, metadata):
     # Define the metrics and their respective parameters for the main table
     alpha_metrics = {
-        'faith_pd': ('alpha_phylogenetic', table_ar, tree_ar, 'faith_pd_asv'),
+#       'faith_pd': ('alpha_phylogenetic', table_ar, tree_ar, 'faith_pd_asv'),
         'shannon': ('alpha', table_ar, None, 'shannon_asv'),
         'chao1': ('alpha', table_ar, None, 'chao1_asv'),
         'simpson': ('alpha', table_ar, None, 'simpson_asv'),
@@ -120,7 +120,7 @@ def process_alpha_diversities(table_ar, genus_table_ar, tree_ar, threads, metada
     
     # Define the metrics and their respective parameters for the genus table
     genus_metrics = {
-        'faith_pd': ('alpha_phylogenetic', genus_table_ar, tree_ar, 'faith_pd_genus'),
+#        'faith_pd': ('alpha_phylogenetic', genus_table_ar, tree_ar, 'faith_pd_genus'),
         'shannon': ('alpha', genus_table_ar, None, 'shannon_genus'),
         'chao1': ('alpha', genus_table_ar, None, 'chao1_genus'),
         'simpson': ('alpha', genus_table_ar, None, 'simpson_genus'),
@@ -150,17 +150,19 @@ def process_alpha_diversities(table_ar, genus_table_ar, tree_ar, threads, metada
     return metadata
 
 
-@click.command()
-@click.option('--taxonomy', type=click.Path(exists=True), required=True)
-@click.option('--tree', type=click.Path(exists=True), required=True)
-@click.option('--feature-table', type=click.Path(exists=True), required=True)
-@click.option('--metadata', type=click.Path(exists=True), required=True)
-@click.option('--output', type=click.Path(exists=False), required=True)
-@click.option('--threads', type=int, required=True)
+#@click.command()
+#@click.option('--taxonomy', type=click.Path(exists=True), required=True)
+#@click.option('--tree', type=click.Path(exists=True), required=True)
+#@click.option('--feature-table', type=click.Path(exists=True), required=True)
+#@click.option('--metadata', type=click.Path(exists=True), required=True)
+#@click.option('--output', type=click.Path(exists=False), required=True)
+#@click.option('--threads', type=int, required=True)
 def process(taxonomy, tree, feature_table, output, threads, metadata, model, sub):
-    # Improved metadata loading with error handling
+    # Load metadata
     try:
-        meta = pd.read_csv(metadata, sep='\t', dtype=str, comment='#').set_index('#SampleID')
+        meta = pd.read_csv(metadata, sep='\t', dtype=str)
+        meta.columns = map(str.lower, meta.columns)
+        meta = meta.set_index('sampleid')
     except csv.Error as e:
         raise ValueError(f"Error parsing metadata file: {e}")
     meta_df = find_complete(meta, model, sub)
@@ -196,7 +198,7 @@ def process(taxonomy, tree, feature_table, output, threads, metadata, model, sub
     genus_table_ar = qiime2.Artifact.import_data('FeatureTable[Frequency]', genus_table)
     genus_table_clr = to_clr(genus_table)
     genus_table_clr_ar = qiime2.Artifact.import_data('FeatureTable[Frequency]', genus_table_clr)
-    genus_table_clr_ar.save(output + '.clr.genus.feature_table.qza')
+#    genus_table_clr_ar.save(output + '.clr.genus.feature_table.qza')
 
     # Calculate and add beta diversities to metadata
     meta_df = process_beta_diversities(table_ar, genus_table_ar, tree_ar, threads, meta_df)
@@ -204,11 +206,10 @@ def process(taxonomy, tree, feature_table, output, threads, metadata, model, sub
     # Calculate and add alpha diversities to metadata
     meta_df = process_alpha_diversities(table_ar, genus_table_ar, tree_ar, threads, meta_df)
 
-#    meta_df.to_csv(output + '.metadata.tsv', sep='\t', index=True, header=True)
+    meta_df.to_csv(output + '.metadata.tsv', sep='\t', index=True, header=True)
     genustable_join = genus_table_clr.transpose()
     newfile =  meta_df.join(genustable_join)
-#    newfile.to_csv(output + '.checkfile.tsv', sep='\t', index=True, header=True)
+    newfile.to_csv(output + '.checkfile.tsv', sep='\t', index=True, header=True)
     return newfile
 if __name__ == '__main__':
     process()
-
