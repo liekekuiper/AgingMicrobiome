@@ -74,8 +74,7 @@ for subs in subsets:
                     formula = f"{out} ~ {model} + {var}"
                     datafile[out] = pd.to_numeric(datafile[out])
                     y, X = dmatrices(formula, data=datafile, return_type='dataframe')
-                    lmmodel = sm.OLS(y, X).fit()
-                    print(formula)                   
+                    lmmodel = sm.OLS(y, X).fit()               
                     coefficients = lmmodel.summary2().tables[1]
                     variable = var
                     result_row = pd.DataFrame([{
