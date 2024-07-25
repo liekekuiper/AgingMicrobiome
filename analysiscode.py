@@ -65,6 +65,8 @@ for subs in subsets:
                 model=model,
                 sub=subs
             )
+            # Replace all hyphens with underscores in the column names as otherwise encounter patsy error
+            datafile.columns = datafile.columns.str.replace('-', '_')
             print('created diversity matrices, now continue with analyses')
             variables = [col for col in datafile.columns if col not in variables_store]
             for var in variables:
