@@ -9,7 +9,7 @@
 source activate qiime2-2023.7
 
 
-python fixed_analysiscode2.py \
+python analysiscode.py \
          --tree=${tree} \
          --taxonomy=${taxonomy} \
          --metadata=${metadata} \
