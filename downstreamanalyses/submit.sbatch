@@ -1,13 +1,14 @@
 #!/bin/bash
 #SBATCH -N 1
 #SBATCH -c 6
-#SBATCH --time=8:00:00
+#SBATCH --time=8-00:00:00
 #SBATCH -J mb_aging_downstream
 #SBATCH --mem=64G
 
 # Activating environment
 source activate qiime2-2023.7
 
+mkdir -p intermediatefiles
 
 python analysiscode.py \
          --tree=${tree} \
@@ -18,4 +19,5 @@ python analysiscode.py \
          --modsfile=${modsfile} \
          --outsfile=${outsfile} \
          --cohortname=${cohortname} \
-         --subsfile=${subsfile}
+         --subsfile=${subsfile} \
+         --factors=${factors}
