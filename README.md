@@ -63,7 +63,7 @@ Now using the previously created GreenGenes2 called data `feature.table.gg2-2022
 ### Metadata
 The Python-script is under the assumption that metadata is a tab-separate .txt document. 
 
-Use submit_analyses.sbatch to start te analyses
+Change the file paths in changenames.sbatch to start the analyses; you can here also add study-specific covariates that should be considered a factor in the factor line. For instance, if you need the study site to be treated as a factor add it here.
 
 Make sure variables are coded according to the analysis plan:
 * sex: "men" and "women";
