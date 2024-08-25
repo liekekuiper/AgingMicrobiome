@@ -63,6 +63,12 @@ Now using the previously created GreenGenes2 called data `feature.table.gg2-2022
 ### Metadata
 The Python-script is under the assumption that metadata is a tab-separate .txt document. 
 
+Run the following commands to make sure all the necessary packages are installed in the qiime2-2023.7 conda environment 
+```
+source activate qiime2-2023.7
+conda install -c conda-forge click scikit-bio pandas numpy biom-format statsmodels lifelines patsy
+```
+
 Change the file paths in changenames.sbatch to start the analyses; you can here also add study-specific covariates that should be considered a factor in the factor line. For instance, if you need the study site to be treated as a factor add it here.
 
 Make sure variables are coded according to the analysis plan:
