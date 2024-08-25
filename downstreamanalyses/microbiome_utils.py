@@ -8,61 +8,87 @@ import skbio
 import biom
 import csv
 from skbio import DistanceMatrix
-
+from qiime2.plugins.feature_table.methods import filter_features_conditionally
 
 # Select non-missing cases
-def find_complete(metadata, model, subset):
-    # Extract the column names from the model string
-    columns = model.split('+')
-    # Drop rows with missing values in the specified columns
-    meta_df = metadata.dropna(subset=columns)
+def find_complete(metadata, model, subset, out, factors):
+    # Ensure 'out' is a list
+    if isinstance(out, str):
+        out = [out]
+
+    # Split the model into columns
+    columns = model.split('+') if model else []
+
+    # Combine columns and out
+    all_columns = columns + out
     
+    # Add specific columns if out is 'mortality'
+    if out == ['mortality']:
+        all_columns += ['studytime', 'age']
+
+    # Drop rows with missing values in the specified columns
+    meta_df = metadata.dropna(subset=all_columns)
+
+    # Filter the DataFrame based on the subset
     if subset == 'all':
         final_df = meta_df
-    elif subset == 'men':
-        final_df = meta_df[meta_df['sex'] == 'men']
-    elif subset == 'women':
-        final_df = meta_df[meta_df['sex'] == 'women']
-    elif subset == 'age_1':
-        final_df = meta_df[(meta_df['age'] >= 18) & (meta_df['age'] < 40)]
-    elif subset == 'age_2':
-        final_df = meta_df[(meta_df['age'] >= 40) & (meta_df['age'] < 50)]
-    elif subset == 'age_3':
-        final_df = meta_df[(meta_df['age'] >= 50) & (meta_df['age'] < 60)]
-    elif subset == 'age_4':
-        final_df = meta_df[(meta_df['age'] >= 60) & (meta_df['age'] < 70)]
-    elif subset == 'age_5':
-        final_df = meta_df[(meta_df['age'] >= 70)]
-
-# Determine factor names
-    if subset in ['women', 'men']:
-        factor_names = ['ppump', 'metfor', 'statin', 'race']
+    elif subset in ['men', 'women']:
+        final_df = meta_df[meta_df['sex'] == subset]
+    elif subset.startswith('age_'):
+        age_ranges = {
+            'age_1': (18, 40),
+            'age_2': (40, 50),
+            'age_3': (50, 60),
+            'age_4': (60, 70),
+            'age_5': (70, float('inf'))
+        }
+        age_min, age_max = age_ranges[subset]
+        final_df = meta_df[(meta_df['age'] >= age_min) & (meta_df['age'] < age_max)]
     else:
-        factor_names = ['sex', 'ppump', 'metfor', 'statin', 'race']
-    
+        raise ValueError(f"Invalid subset: {subset}")
+
+    # Make a copy of the final_df to avoid SettingWithCopyWarning
+    final_df = final_df.copy()
+
+    # Determine factor names
+    base_factors = ['ppump', 'metfor', 'statin', 'race']
+    if factors != ['NA']:
+        factor_names = base_factors + factors
+    else:
+        factor_names = base_factors
+
+    if subset not in ['women', 'men']:
+        factor_names = ['sex'] + factor_names
+
     # Re-level factors and convert to categorical
     for factor_name in factor_names:
         if factor_name == 'sex':
-            final_df['sex'] = pd.Categorical(final_df['sex'], categories=['men', 'women'])
-            final_df['sex'] = final_df['sex'].cat.reorder_categories(['men', 'women'], ordered=True)
+            final_df['sex'] = pd.Categorical(final_df['sex'], categories=['men', 'women'], ordered=True)
         elif factor_name == 'race':
-            # Ensure 'white' is the reference category
             all_categories = final_df['race'].unique().tolist()
             if 'white' in all_categories:
                 all_categories.remove('white')
             all_categories = ['white'] + all_categories
             final_df['race'] = pd.Categorical(final_df['race'], categories=all_categories, ordered=True)
+        elif factor_name in factors:
+            largest_category = final_df[factor_name].value_counts().idxmax()
+            all_categories = [largest_category] + [cat for cat in final_df[factor_name].unique() if cat != largest_category]
+            final_df[factor_name] = pd.Categorical(final_df[factor_name], categories=all_categories, ordered=True)
         else:
-            final_df[factor_name] = pd.Categorical(final_df[factor_name], categories=['0', '1'])
-            final_df[factor_name] = final_df[factor_name].cat.reorder_categories(['0', '1'], ordered=True)
-    
-    return final_df
+            final_df[factor_name] = pd.Categorical(final_df[factor_name], categories=[0, 1], ordered=True)
 
+    # Create dummy variables for non-numeric categories if 'mortality' is in out
+    if 'mortality' in out:
+        for covariate in columns:
+            if final_df[covariate].dtype == 'object' or final_df[covariate].dtype.name == 'category':
+                final_df = pd.get_dummies(final_df, columns=[covariate], drop_first=True)
+
+    return final_df
 
 # Genus-level
 def as_genus(table, taxonomy):
     genus = taxonomy['genus'].to_dict()
-    return table.collapse(lambda i, m: genus.get(i, f'Unknown Genus ({i})'), norm=False, axis='observation')
+    return table.collapse(lambda i, m: genus.get(i, f'Unknown_Genus_{i}'), norm=False, axis='observation')
 
 
 # Function from absolute abundances to clr
@@ -111,7 +137,7 @@ def process_beta_diversities(table_ar, genus_table_ar, tree_ar, threads, metadat
 def process_alpha_diversities(table_ar, genus_table_ar, tree_ar, threads, metadata):
     # Define the metrics and their respective parameters for the main table
     alpha_metrics = {
-#       'faith_pd': ('alpha_phylogenetic', table_ar, tree_ar, 'faith_pd_asv'),
+       'faith_pd': ('alpha_phylogenetic', table_ar, tree_ar, 'faith_pd_asv'),
         'shannon': ('alpha', table_ar, None, 'shannon_asv'),
         'chao1': ('alpha', table_ar, None, 'chao1_asv'),
         'simpson': ('alpha', table_ar, None, 'simpson_asv'),
@@ -120,7 +146,7 @@ def process_alpha_diversities(table_ar, genus_table_ar, tree_ar, threads, metada
     
     # Define the metrics and their respective parameters for the genus table
     genus_metrics = {
-#        'faith_pd': ('alpha_phylogenetic', genus_table_ar, tree_ar, 'faith_pd_genus'),
+        'faith_pd': ('alpha_phylogenetic', genus_table_ar, tree_ar, 'faith_pd_genus'),
         'shannon': ('alpha', genus_table_ar, None, 'shannon_genus'),
         'chao1': ('alpha', genus_table_ar, None, 'chao1_genus'),
         'simpson': ('alpha', genus_table_ar, None, 'simpson_genus'),
@@ -149,26 +175,18 @@ def process_alpha_diversities(table_ar, genus_table_ar, tree_ar, threads, metada
     
     return metadata
 
-
-#@click.command()
-#@click.option('--taxonomy', type=click.Path(exists=True), required=True)
-#@click.option('--tree', type=click.Path(exists=True), required=True)
-#@click.option('--feature-table', type=click.Path(exists=True), required=True)
-#@click.option('--metadata', type=click.Path(exists=True), required=True)
-#@click.option('--output', type=click.Path(exists=False), required=True)
-#@click.option('--threads', type=int, required=True)
-def process(taxonomy, tree, feature_table, output, threads, metadata, model, sub):
+def process(taxonomy, tree, feature_table, output, threads, metadata, model, sub, out, factors):
     # Load metadata
     try:
-        meta = pd.read_csv(metadata, sep='\t', dtype=str)
-        meta.columns = map(str.lower, meta.columns)
+        meta = pd.read_csv(metadata, sep='\t')
+        meta.columns = [col.lower() for col in meta.columns]
+        meta['sampleid'] = meta['sampleid'].astype(str) #Make strings for joining with feature table
         meta = meta.set_index('sampleid')
     except csv.Error as e:
         raise ValueError(f"Error parsing metadata file: {e}")
-    meta_df = find_complete(meta, model, sub)
+    meta_df = find_complete(meta, model, sub, out, factors)
     taxonomy = qiime2.Artifact.load(taxonomy).view(pd.DataFrame)
     tree_ar = qiime2.Artifact.load(tree)
-    tree = tree_ar.view(skbio.TreeNode)
     
     #Save sample ids
     sample_ids = meta_df.index.tolist()
@@ -184,32 +202,25 @@ def process(taxonomy, tree, feature_table, output, threads, metadata, model, sub
     # Filter sample IDs to keep only those present in both meta_df and table_16s
     common_sample_ids = [sid for sid in sample_ids if sid in valid_sample_ids]
     meta_df = meta_df.loc[common_sample_ids]
-    filtered_table = feature_table.filter(common_sample_ids, axis='sample', inplace=False)
-
-    #Make Qiime object again
-    table_ar = qiime2.Artifact.import_data('FeatureTable[Frequency]', filtered_table)
-    #Perform CLR
-    table_clr = to_clr(filtered_table)
-    table_clr_ar = qiime2.Artifact.import_data('FeatureTable[Frequency]', table_clr)
+    filtered_table_sample = feature_table.filter(common_sample_ids, axis='sample', inplace=False)
+    filtered_sample_ar = qiime2.Artifact.import_data('FeatureTable[Frequency]', filtered_table_sample)
+    table_ar = filter_features_conditionally(filtered_sample_ar, abundance=0.01, prevalence=0.1).filtered_table
 
     #Genus level
     taxonomy['genus'] = taxonomy['Taxon'].apply(lambda x: x.split('; ')[-2])
-    genus_table = as_genus(filtered_table, taxonomy)
-    genus_table_ar = qiime2.Artifact.import_data('FeatureTable[Frequency]', genus_table)
+    genus_table_tax = as_genus(filtered_table_sample, taxonomy)
+    genus_table_ar_unfiltered = qiime2.Artifact.import_data('FeatureTable[Frequency]', genus_table_tax)
+    genus_table_ar = filter_features_conditionally(genus_table_ar_unfiltered, abundance=0.01, prevalence=0.1).filtered_table
+    genus_table = genus_table_ar.view(biom.Table)
     genus_table_clr = to_clr(genus_table)
-    genus_table_clr_ar = qiime2.Artifact.import_data('FeatureTable[Frequency]', genus_table_clr)
-#    genus_table_clr_ar.save(output + '.clr.genus.feature_table.qza')
 
     # Calculate and add beta diversities to metadata
     meta_df = process_beta_diversities(table_ar, genus_table_ar, tree_ar, threads, meta_df)
     
     # Calculate and add alpha diversities to metadata
     meta_df = process_alpha_diversities(table_ar, genus_table_ar, tree_ar, threads, meta_df)
-
-    meta_df.to_csv(output + '.metadata.tsv', sep='\t', index=True, header=True)
     genustable_join = genus_table_clr.transpose()
     newfile =  meta_df.join(genustable_join)
-    newfile.to_csv(output + '.checkfile.tsv', sep='\t', index=True, header=True)
     return newfile
 if __name__ == '__main__':
     process()
