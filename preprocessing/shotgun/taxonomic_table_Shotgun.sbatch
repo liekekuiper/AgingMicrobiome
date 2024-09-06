@@ -14,7 +14,6 @@ set -e
 
 #qiime 
 qiime greengenes2 taxonomy-from-table \
-     --i-reference-taxonomy 2022.10.taxon
      --i-reference-taxonomy 2022.10.taxonomy.asv.nwk.qza \
      --i-table feature.table.gg2-2022.10.qza \
      --o-classification df.gg2.taxonomy.qza
