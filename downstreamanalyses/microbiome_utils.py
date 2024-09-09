@@ -146,7 +146,7 @@ def process_alpha_diversities(table_ar, genus_table_ar, tree_ar, threads, metada
     
     # Define the metrics and their respective parameters for the genus table
     genus_metrics = {
-        'faith_pd': ('alpha_phylogenetic', genus_table_ar, tree_ar, 'faith_pd_genus'),
+#        'faith_pd': ('alpha_phylogenetic', genus_table_ar, tree_ar, 'faith_pd_genus'),
         'shannon': ('alpha', genus_table_ar, None, 'shannon_genus'),
         'chao1': ('alpha', genus_table_ar, None, 'chao1_genus'),
         'simpson': ('alpha', genus_table_ar, None, 'simpson_genus'),
