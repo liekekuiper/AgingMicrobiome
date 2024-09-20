@@ -12,5 +12,4 @@ set -e
 qiime greengenes2 filter-features \
     --i-feature-table data.deblur.150nt.qza \
     --i-reference ../2022.10.taxonomy.asv.nwk.qza \
-    --o-filtered-feature-table feature.table.gg2-2022.10.qza \
-
+    --o-filtered-feature-table feature.table.gg2-2022.10.qza 
