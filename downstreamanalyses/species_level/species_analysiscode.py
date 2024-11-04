@@ -131,11 +131,11 @@ for subs in subsets:
                         'P': coefficients.loc[variable, 'p']
                     }])
                 results_df = pd.concat([results_df, result_row], ignore_index=True)
-            results_df.to_csv(f"./intermediatefiles/Results_{subs}_{cohort}_{pd.Timestamp.today().date()}.csv", index=False)
+            results_df.to_csv(f"./intermediatefiles/Results_species_{subs}_{cohort}_{pd.Timestamp.today().date()}.csv", index=False)
             model = original_model  # Reset the model to its original state for the next iteration
     print(f"Finished analyses of {subs}")
 
-results_df.to_csv(f"Results_{cohort}_{pd.Timestamp.today().date()}.csv", index=False)
+results_df.to_csv(f"Results_species_{cohort}_{pd.Timestamp.today().date()}.csv", index=False)
 
 if __name__ == '__main__':
     process()  # Ensuring the click context for process() to work if this script is run standalone
