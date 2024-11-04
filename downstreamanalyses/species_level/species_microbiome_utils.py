@@ -85,11 +85,14 @@ def find_complete(metadata, model, subset, out, factors):
 
     return final_df
 
-# Species-level
+# Species-level: add unknown species when not known and replace spaces with _ for downstream analyses
 def as_species(table, taxonomy):
     species = taxonomy['species'].to_dict()
-    return table.collapse(lambda i, m: species.get(i, f'Unknown_Species_{i}'), norm=False, axis='observation')
-
+    return table.collapse(
+        lambda i, m: species.get(i, f'Unknown_Species_{i}').replace(' ', '_'), 
+        norm=False, 
+        axis='observation'
+    )
 
 # Function from absolute abundances to clr
 def to_clr(data):
