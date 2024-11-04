@@ -85,10 +85,10 @@ def find_complete(metadata, model, subset, out, factors):
 
     return final_df
 
-# Genus-level
-def as_genus(table, taxonomy):
-    genus = taxonomy['genus'].to_dict()
-    return table.collapse(lambda i, m: genus.get(i, f'Unknown_Genus_{i}'), norm=False, axis='observation')
+# Species-level
+def as_species(table, taxonomy):
+    genus = taxonomy['species'].to_dict()
+    return table.collapse(lambda i, m: species.get(i, f'Unknown_Species_{i}'), norm=False, axis='observation')
 
 
 # Function from absolute abundances to clr
@@ -206,7 +206,7 @@ def process(taxonomy, tree, feature_table, output, threads, metadata, model, sub
 
     #Genus level
     taxonomy['species'] = taxonomy['Taxon'].apply(lambda x: x.split('; ')[-1])
-    species_table_tax = as_genus(filtered_table_sample, taxonomy)
+    species_table_tax = as_species(filtered_table_sample, taxonomy)
     species_table_ar_unfiltered = qiime2.Artifact.import_data('FeatureTable[Frequency]', species_table_tax)
     species_table_ar = filter_features_conditionally(species_table_ar_unfiltered, abundance=0.01, prevalence=0.1).filtered_table
     species_table = species_table_ar.view(biom.Table)
