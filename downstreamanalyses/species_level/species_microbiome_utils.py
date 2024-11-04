@@ -87,7 +87,7 @@ def find_complete(metadata, model, subset, out, factors):
 
 # Species-level
 def as_species(table, taxonomy):
-    genus = taxonomy['species'].to_dict()
+    species = taxonomy['species'].to_dict()
     return table.collapse(lambda i, m: species.get(i, f'Unknown_Species_{i}'), norm=False, axis='observation')
 
 
