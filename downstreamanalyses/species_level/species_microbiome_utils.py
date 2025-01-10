@@ -207,7 +207,7 @@ def process(taxonomy, tree, feature_table, output, threads, metadata, model, sub
     filtered_sample_ar = qiime2.Artifact.import_data('FeatureTable[Frequency]', filtered_table_sample)
     table_ar = filter_features_conditionally(filtered_sample_ar, abundance=0.01, prevalence=0.1).filtered_table
 
-    #Genus level
+    #Species level
     taxonomy['species'] = taxonomy['Taxon'].apply(lambda x: x.split('; ')[-1])
     species_table_tax = as_species(filtered_table_sample, taxonomy)
     species_table_ar_unfiltered = qiime2.Artifact.import_data('FeatureTable[Frequency]', species_table_tax)
