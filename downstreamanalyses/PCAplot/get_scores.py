@@ -4,9 +4,10 @@ from skbio.stats.composition import clr
 import qiime2
 import biom
 
+#Change file paths if not in current directory; add cohort name
 cohort_name = '' #Type cohort name if the cohort has both 16S and shotgun make either cohortA16S or cohortAshotgun
-feature_table_path = '' #Type the path to the feature table (feature.table.gg2-2022.10.qza)
-taxonomy_path = '' #Type the path to the taxonomy table (2022.10.taxonomy.asv.tsv.qza)
+feature_table_path = 'feature.table.gg2-2022.10.qza' #Type the path to the feature table (feature.table.gg2-2022.10.qza)
+taxonomy_path = '2022.10.taxonomy.asv.tsv.qza' #Type the path to the taxonomy table (2022.10.taxonomy.asv.tsv.qza)
 pca_loadings_path = 'combined_pca_loadings.csv' #Type the path to file with the pca loadings based on FHS (16S & shotgun), MrOS (16S & shotgun), and Rotterdam Study (16S) data
 common_genera_path = 'common_genera.txt' #Type the path to the file with the 4 genera amongst the top 10 genera in FHS (16S & shotgun), MrOS (16S & shotgun), and Rotterdam Study (16S) data
 
