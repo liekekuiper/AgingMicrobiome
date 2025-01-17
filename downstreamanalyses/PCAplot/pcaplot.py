@@ -12,8 +12,13 @@ scores_dcs = pd.read_csv('pca_scores_DCS_common_genera.csv', index_col = 0)
 #scores_sol16s
 #scores_solshot
 
+#Combine scores into one dataframe
 scores_combined = scores_server1.merge(scores_dcs, how = 'outer')
+
+#Reshuffle to avoid order of combining cohort determines plot
 scores = scores_combined.sample(frac=1)
+
+#Load explained variance per PCA
 explained_variance = pd.read_csv('explained_variance.csv', index_col = 0)
 
 # Plot PCA
