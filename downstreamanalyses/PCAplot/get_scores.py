@@ -9,7 +9,7 @@ cohort_name = '' #Type cohort name if the cohort has both 16S and shotgun make e
 feature_table_path = 'feature.table.gg2-2022.10.qza' #Type the path to the feature table (feature.table.gg2-2022.10.qza)
 taxonomy_path = '2022.10.taxonomy.asv.tsv.qza' #Type the path to the taxonomy table (2022.10.taxonomy.asv.tsv.qza)
 pca_loadings_path = 'combined_pca_loadings.csv' #Type the path to file with the pca loadings based on FHS (16S & shotgun), MrOS (16S & shotgun), and Rotterdam Study (16S) data
-common_genera_path = 'common_genera.txt' #Type the path to the file with the 4 genera amongst the top 10 genera in FHS (16S & shotgun), MrOS (16S & shotgun), and Rotterdam Study (16S) data
+common_genera_path = 'common_genera.txt' #Type the path to the file with the 7 genera amongst the top 20 genera in FHS (16S & shotgun), MrOS (16S & shotgun), SOL (16S & shotgun) and Rotterdam Study (16S) data
 
 
 ####### Keep everything underneath this line untouched ########
