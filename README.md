@@ -78,7 +78,7 @@ Make sure variables are coded according to the analysis plan:
 * statin: stating usage, if participant indicates use 1, not 0;
 * bmi: numeric, as many digits as available;
 * race: as factor, "white" will be reference
-* dietscore: numeric, as many digits as available
+* dietscore: numeric, as many digits as available (Nettleton: DOI: 10.1093/aje/kws297)
 * fiber: numeric, as many digits as available
 
 ### Models
