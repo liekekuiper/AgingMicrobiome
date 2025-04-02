@@ -61,7 +61,7 @@ Following the GreenGenes2 harmonization, there are three options available. Plea
 Now using the previously created GreenGenes2 called data `feature.table.gg2-2022.10.qza` and taxonomy file `df.gg2.taxonomy.qza` we will run the analyses with the aging phenotypes.
 
 ### Metadata
-The Python-script is under the assumption that metadata is a tab-separate .txt document. 
+The Python-script is under the assumption that metadata is a tab-separate .txt document. The first column needs to be sampleid, it is very important that the values in `sampleid` column overlap with the sampleid in the feature-table .qza file.
 
 Run the following commands to make sure all the necessary packages are installed in the qiime2-2023.7 conda environment 
 ```
@@ -91,7 +91,7 @@ To clarify:
 * age: chronological age
 * fi: frailty index
 * cont: continuous frailty phenotype
-* mortality: all-cause mortality
+* mortality: all-cause mortality; If mortality is the outcome of interest the script also expects the variables `age` (chronological age) and `studytime` (time between sampling and censoring) to be present in the meta-data
 
 ### Subset
 Remove from the `subsets_agingmicrobiome.txt` file subsets your cohort does not take part in.
