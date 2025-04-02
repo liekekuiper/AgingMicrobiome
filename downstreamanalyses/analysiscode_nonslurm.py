@@ -8,6 +8,7 @@ from microbiome_utils import *
 from patsy import dmatrices
 
 # Fill in the right filepaths
+label = '16s/metagenomics' #keep the one for which the analyses are run 
 taxonomy = '2022.10.taxonomy.asv.tsv.qza' #path to taxonomy file
 tree = '2022.10.phylogeny.asv.nwk.qza' #path to tree
 feature_table = 'feature.table.gg2-2022.10.qza' #path to feature table
@@ -139,7 +140,7 @@ for subs in subsets:
             model = original_model  # Reset the model to its original state for the next iteration
     print(f"Finished analyses of {subs}")
 
-results_df.to_csv(f"Results_{cohort}_{pd.Timestamp.today().date()}.csv", index=False)
+results_df.to_csv(f"Results_{cohort}_{label}_{pd.Timestamp.today().date()}.csv", index=False)
 
 if __name__ == '__main__':
     process()  # Ensuring the click context for process() to work if this script is run standalone
