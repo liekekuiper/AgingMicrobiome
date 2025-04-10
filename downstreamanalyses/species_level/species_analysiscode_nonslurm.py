@@ -8,17 +8,17 @@ from species_microbiome_utils import *
 from patsy import dmatrices
 
 # Fill in the right filepaths
-label = '16s/metagenomics' #keep the one for which the analyses are run 
-taxonomy = '2022.10.taxonomy.asv.tsv.qza' #path to taxonomy file
-tree = '2022.10.phylogeny.asv.nwk.qza' #path to tree
-feature_table = 'feature.table.gg2-2022.10.qza' #path to feature table
-metadata = 'metadata.txt' #path to metadata
-threads = int(6) #change threads if needed
-modsfile = 'mods_agingmicrobiome.txt' #path to file with models
-outsfile = 'outs_agingmicrobiome.txt' #path with files with outcomes
-cohortname = 'cohort.txt' #path to file with cohort name
-subsfile = 'subsets_agingmicrobiome.txt' #path to file with relevant subsets
-factors_str = 'NA' #Are there any study-specific variables that need to be added that are a factor, add those here, in case of >1 'factor1,factor2'
+label = '16s/metagenomics'  # keep the one for which the analyses are run 
+taxonomy = '2022.10.taxonomy.asv.tsv.qza'  # path to taxonomy file
+tree = '2022.10.phylogeny.asv.nwk.qza'  # path to tree
+feature_table = 'feature.table.gg2-2022.10.qza'  # path to feature table
+metadata = 'metadata.txt'  # path to metadata
+threads = int(6)  # change threads if needed
+modsfile = 'mods_agingmicrobiome.txt'  # path to file with models
+outsfile = 'outs_agingmicrobiome.txt'  # path with files with outcomes
+cohortname = 'cohort.txt'  # path to file with cohort name
+subsfile = 'subsets_agingmicrobiome.txt'  # path to file with relevant subsets
+factors_str = 'NA'  # Are there any study-specific variables that need to be added that are a factor
 
 #----------------------------------------------------#
 ##   Do not change anything underneath these lines  ##
@@ -57,7 +57,7 @@ variables_store = pd.read_csv(metadata, sep='\t', dtype=str).columns.str.lower()
 
 print('stored variables, will start for loop')
 
-#Run analyses
+# Run analyses
 for subs in subsets:
     print(f"Performing analyses of {subs}")
     for out in outcomes:
@@ -80,7 +80,7 @@ for subs in subsets:
                 out=out,
                 factors=factors
             )
-            # Replace all hyphens with underscores in the column names as otherwise encounter patsy error
+            # Replace all hyphens with underscores in the column names to avoid patsy errors
             datafile.columns = datafile.columns.str.replace('-', '_')
             print('created diversity matrices, now continue with analyses')
             variables = [
@@ -110,32 +110,37 @@ for subs in subsets:
                         't.value': coefficients.loc[variable, 't'],
                         'P': coefficients.loc[variable, 'P>|t|']
                     }])
+                    results_df = pd.concat([results_df, result_row], ignore_index=True)
                 else:
                     datafile['followup'] = datafile['studytime'] + datafile['age']
                     covariates = model_terms + [var]
                     covariates = [cov.strip() for cov in covariates]  # Ensure no leading/trailing spaces
-                    # Get final list of covariates after encoding
                     covariates_use = [col for col in datafile.columns if any(cov in col for cov in covariates)]
                     cph = CoxPHFitter()
-                    cph.fit(datafile[covariates_use + ['followup', 'mortality']], duration_col='followup', event_col='mortality')
-                    coefficients = cph.summary
-                    variable = var
-                    result_row = pd.DataFrame([{
-                        'Datasplit': subs,
-                        'Outcome': out,
-                        'Variable': var,
-                        'Model': model,
-                        'N': cph._n_examples,
-                        'Ncases': cph.event_observed.sum(),
-                        'Coefficient': coefficients.loc[variable, 'coef'],
-                        'Std.Error': coefficients.loc[variable, 'se(coef)'],
-                        'HR': coefficients.loc[variable, 'exp(coef)'],
-                        'LL': coefficients.loc[variable, 'exp(coef) lower 95%'],
-                        'UL': coefficients.loc[variable, 'exp(coef) upper 95%'],
-                        't.value': np.nan,
-                        'P': coefficients.loc[variable, 'p']
-                    }])
-                results_df = pd.concat([results_df, result_row], ignore_index=True)
+                    try:
+                        cph.fit(datafile[covariates_use + ['followup', 'mortality']], duration_col='followup', event_col='mortality')
+                        coefficients = cph.summary
+                        variable = var
+                        result_row = pd.DataFrame([{
+                            'Datasplit': subs,
+                            'Outcome': out,
+                            'Variable': var,
+                            'Model': model,
+                            'N': cph._n_examples,
+                            'Ncases': cph.event_observed.sum(),
+                            'Coefficient': coefficients.loc[variable, 'coef'],
+                            'Std.Error': coefficients.loc[variable, 'se(coef)'],
+                            'HR': coefficients.loc[variable, 'exp(coef)'],
+                            'LL': coefficients.loc[variable, 'exp(coef) lower 95%'],
+                            'UL': coefficients.loc[variable, 'exp(coef) upper 95%'],
+                            't.value': np.nan,
+                            'P': coefficients.loc[variable, 'p']
+                        }])
+                        results_df = pd.concat([results_df, result_row], ignore_index=True)
+                    except Exception as e:
+                        print(f"Failed CoxPH fit for variable '{var}' in subset '{subs}' with outcome '{out}'. Error: {e}")
+                        print(f"Covariates used: {covariates_use}")
+                        continue
             results_df.to_csv(f"./intermediatefiles/Results_species_{subs}_{cohort}_{pd.Timestamp.today().date()}.csv", index=False)
             model = original_model  # Reset the model to its original state for the next iteration
     print(f"Finished analyses of {subs}")
