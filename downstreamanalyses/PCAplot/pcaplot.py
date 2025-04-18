@@ -7,10 +7,11 @@ scores_server1 = pd.read_csv('combined_pca_scores.csv', index_col = 0)
 #Load the scores from the Doetinchem Cohort Study
 scores_dcs = pd.read_csv('pca_scores_DCS_common_genera.csv', index_col = 0)
 #Load the scores from LifeLines
-#scores_ll
+scores_ll = pd.read_csv('pca_scores_DAGIII_common_genera.csv', index_col = 0)
+scores_ll['Cohort'] = 'LL'
 
 #Combine scores into one dataframe
-scores_combined = scores_server1.merge(scores_dcs, how = 'outer')
+scores_combined = scores_server1.merge(scores_dcs, how = 'outer').merge(scores_ll, how = 'outer')
 
 #Reshuffle to avoid order of combining cohort determines plot
 scores = scores_combined.sample(frac=1)
