@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from microbiome_utils import *
+from species_microbiome_utils import *
 
 # Load relative table
 rel_species = qiime2.Artifact.load('rel-species-table.qza').view(biom.Table).to_dataframe()
