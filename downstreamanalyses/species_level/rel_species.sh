@@ -19,4 +19,4 @@ qiime feature-table relative-frequency \
     --i-table species-table.qza \
     --o-relative-frequency-table rel-species-table.qza
 
-python rel_ab_prev.py
+python rel_ab_prev_species.py
