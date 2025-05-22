@@ -213,10 +213,10 @@ def process(taxonomy, tree, feature_table, output, threads, metadata, model, sub
     genus_table_clr = to_clr(genus_table)
 
     # Calculate and add beta diversities to metadata
-    meta_df = process_beta_diversities(table_ar, genus_table_ar, tree_ar, threads, meta_df)
+    meta_df = process_beta_diversities(filtered_sample_ar, genus_table_ar_unfiltered, tree_ar, threads, meta_df)
     
     # Calculate and add alpha diversities to metadata
-    meta_df = process_alpha_diversities(table_ar, genus_table_ar, tree_ar, threads, meta_df)
+    meta_df = process_alpha_diversities(filtered_sample_ar, genus_table_ar_unfiltered, tree_ar, threads, meta_df)
     genustable_join = genus_table_clr.transpose()
     newfile =  meta_df.join(genustable_join)
     return newfile
