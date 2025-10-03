@@ -1,7 +1,7 @@
 # AgingMicrobiome
 This is the CHARGE collaboration to detect an aging signature in the human stool microbiome. 
 
-American cohorts can use the Qiita environment to perform the preprocessing steps. Preprocessed data is expected to be called
+American cohorts can use the Qiita environment to perform the preprocessing steps. Preprocessed data is expected to be called `feature.table.gg2-2022.10.qza` and the corresponding taxonomy file `df.gg2.taxonomy.qza`.
 
 For European cohorts, this is due to the GDPR forbidden; hence, preprocessing should be performed locally. 
 
