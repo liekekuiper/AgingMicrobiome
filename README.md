@@ -42,6 +42,14 @@ pip install woltka
 ```
 You also have to download the Web of Life: [http://ftp.microbio.me/pub/wol2/genomes/] (file named all.fna). Place this file into a directory wol2 within the directory where your files are located. 
 
+This can be done by the following code
+
+```{bash}
+mkdir -p wol2
+cd wol2
+curl -L -O https://ftp.microbio.me/pub/wol2/genomes/all.fna.xz
+```
+
 Run `PreprocessingShotgun.sh` 
 
 ### GreenGenes2
