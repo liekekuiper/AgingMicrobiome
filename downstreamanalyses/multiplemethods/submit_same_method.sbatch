@@ -13,5 +13,5 @@ metadata=MrOS_meta.txt
 table_16s=./16S/renamed_feature.table.gg2-2022.10.qza
 table_wgs=./MrOS_Shotgun_Sequencing/renamed_feature.table.gg2-2022.10.qza
 label=MrOS
-sbatch --export depth_16S=${depth_16S},depth_WGS=${depth_WGS},tree=${tree},taxonomy=${taxonomy},metadata=${metadata},table_16s=${table_16s},table_wgs=${table_wgs},label=${label} submit.sbatch
+sbatch --export depth_16S=${depth_16S},depth_WGS=${depth_WGS},tree=${tree},taxonomy=${taxonomy},metadata=${metadata},table_16s=${table_16s},table_wgs=${table_wgs},label=${label} submit_beta_multimeth.sbatch
 
