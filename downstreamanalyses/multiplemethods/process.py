@@ -35,12 +35,6 @@ def concat(table_16s, table_wgs, metadata):
     return table, md
 
 
-#def subsample(table, tree, depth):
-#    feats = {n.name for n in tree.tips()}
-#    table = table.filter(feats & set(table.ids(axis='observation')), axis='observation')
-#    table = table.filter(lambda v, i, m: v.sum() >= depth).remove_empty()
-#    return table.subsample(depth, with_replacement=True)
-
 def filter_table(table, tree, depth=None):
     feats = {n.name for n in tree.tips()}
     table = table.filter(feats & set(table.ids(axis='observation')), axis='observation')
@@ -71,8 +65,6 @@ def process(taxonomy, tree, table_16s, table_wgs, output, threads, metadata,
     table_wgs = table_wgs_ar.view(biom.Table)
     metadata = qiime2.Metadata.load(metadata).to_dataframe()
 
-    #table_16s = subsample(table_16s, tree, depth_16s)
-    #table_wgs = subsample(table_wgs, tree, depth_wgs)
     table_16s = filter_table(table_16s, tree, depth_16s)
     table_wgs = filter_table(table_wgs, tree, depth_wgs)
     table, metadata = concat(table_16s, table_wgs, metadata)
