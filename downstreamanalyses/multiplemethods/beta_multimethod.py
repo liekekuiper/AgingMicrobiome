@@ -5,13 +5,6 @@ import pandas as pd
 import skbio
 import biom
 
-
-def as_genus(table, taxonomy):
-    genus = taxonomy['genus'].to_dict()
-
-    return table.collapse(lambda i, m: genus[i], norm=False,
-                          axis='observation')
-
 def concat(table_16s, table_wgs, metadata):
     md_ids = set(metadata.index)
     overlap = (set(table_16s.ids()) & set(table_wgs.ids()) & md_ids)
@@ -54,7 +47,7 @@ def filter_table(table, tree, depth=None):
 @click.option('--threads', type=int, required=True)
 @click.option('--depth-16S', type=int, default=10000)
 @click.option('--depth-WGS', type=int, default=1000000)
-def process(taxonomy, tree, table_16s, table_wgs, output, threads, metadata,
+def beta_multimeth(taxonomy, tree, table_16s, table_wgs, output, threads, metadata,
             depth_16s, depth_wgs):
     taxonomy = qiime2.Artifact.load(taxonomy).view(pd.DataFrame)
     tree_ar = qiime2.Artifact.load(tree)
@@ -74,10 +67,6 @@ def process(taxonomy, tree, table_16s, table_wgs, output, threads, metadata,
     table_ar = qiime2.Artifact.import_data('FeatureTable[Frequency]', table)
     table_ar.save(output + '.feature_table.qza')
 
-    taxonomy['genus'] = taxonomy['Taxon'].apply(lambda x: x.split('; ')[-2])
-    genus_table = as_genus(table, taxonomy)
-    genus_table_ar = qiime2.Artifact.import_data('FeatureTable[Frequency]', genus_table)
-
     
     wu_feature_dm, = diversity.actions.beta_phylogenetic(table_ar, tree_ar,
                                                          threads=threads,
@@ -90,4 +79,4 @@ def process(taxonomy, tree, table_16s, table_wgs, output, threads, metadata,
 
 
 if __name__ == '__main__':
-    process()
+    beta_multimeth()
