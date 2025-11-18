@@ -7,7 +7,7 @@
 
 source activate qiime2-2023.7
 
-python process.py \
+python beta_multimeth.py \
     --tree ${tree} \
     --table-16s ${table_16s} \
     --table-wgs ${table_wgs} \
