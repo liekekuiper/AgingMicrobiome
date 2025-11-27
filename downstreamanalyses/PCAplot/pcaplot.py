@@ -22,11 +22,19 @@ explained_variance = pd.read_csv('explained_variance.csv', index_col = 0)
 # Plot PCA
 sns.set(style="whitegrid")
 plt.figure(figsize=(10, 8))
-sns.scatterplot(data=scores, x="PC1", y="PC2", hue="Cohort", palette="Set2", s=75, alpha=0.5)
+ax = sns.scatterplot(data=scores, x="PC1", y="PC2", hue="Cohort", palette="Set2", s=75, alpha=0.5)
+
+# Sort legend alphabetically s
+handles, labels = ax.get_legend_handles_labels()
+# First entry is the legend title; keep it separate
+handles = handles[1:]
+labels = labels[1:]
+labels_handles_sorted = sorted(zip(labels, handles), key=lambda x: x[0])
+sorted_labels, sorted_handles = zip(*labels_handles_sorted)
+plt.legend(sorted_handles, sorted_labels, title="Cohort", loc="best", fontsize=10)
 plt.title("PCA of CLR-Transformed Data for Top 7 Genera (Grouped by Cohort)", fontsize=14)
 plt.xlabel(f"PC1 ({explained_variance['0'][0]*100:.1f}%)")
 plt.ylabel(f"PC2 ({explained_variance['0'][1]*100:.1f}%)")
-plt.legend(title="Cohort", loc="best", fontsize=10)
 plt.tight_layout()
 plt.savefig("combined_pca_plot.png")
 plt.show()
