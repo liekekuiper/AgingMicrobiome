@@ -1,0 +1,21 @@
+Package: microbiomebiom
+Title: Package to create GenusFI, a Genus-based Microbiome Aging Risk Score
+Version: 0.0.0.9000
+Authors@R: 
+    person("Alex", "Kurilshikov", role = "aut"),
+    person("Lieke", "Kuiper", role = "cre", email = "kuiperlieke@gmail.com")
+Description: Computes a GenusFI a genus-based microbiome risk score. Users are expected
+    to apply all inclusion and exclusion criteria prior to analysis.
+License: MIT
+LazyData: true
+Imports:
+    vegan
+Suggests:
+    phyloseq,
+    rbiom,
+    SummarizedExperiment
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends: 
+    R (>= 3.5)
