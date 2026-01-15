@@ -1,7 +1,7 @@
 # AgingMicrobiome
 This is the CHARGE collaboration to detect an aging signature in the human stool microbiome. 
 
-*Information for the microbiombiom R-package are in the microbiombiom directory*
+*Information for the microbiombiom R-package are in the microbiombiom subdirectory*
 
 American cohorts can use the Qiita environment to perform the preprocessing steps. Preprocessed data is expected to be called `feature.table.gg2-2022.10.qza` and the corresponding taxonomy file `df.gg2.taxonomy.qza`.
 
