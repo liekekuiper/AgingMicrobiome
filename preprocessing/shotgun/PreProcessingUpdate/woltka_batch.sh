@@ -20,7 +20,7 @@ BATCH_DIR=$(printf "Batch%02d" "$BATCH_ID")
 cd "$SLURM_SUBMIT_DIR/$BATCH_DIR"
 
 ./wol2sop.sh \
-  -d ../wol2 \
+  -d ../wol2 \ #Change into your wol2 directory
   -i align \
   -o Output \
   -f biom \
