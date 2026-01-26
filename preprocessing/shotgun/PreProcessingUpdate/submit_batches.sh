@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-MANIFEST=manifest
+MANIFEST=manifest #location to manifest file
 BATCH_SIZE=10
 
 TOTAL=$(($(wc -l < "$MANIFEST") - 1))
