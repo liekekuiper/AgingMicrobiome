@@ -128,8 +128,8 @@ See the package README in the subfolder for full documentation.
 ---
 
 ## Citation
-
 If you use this code, please cite this repository.
+
 ---
 
 ## Contact
