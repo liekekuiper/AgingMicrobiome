@@ -6,7 +6,7 @@ library("tidyr")
 library("ComplexUpset")
 library('stringr')
 
-source('../MicrobiomeAging_functions.R')
+source('../../../metaanalyses/MicrobiomeAging_functions.R')
 
 #### Data loading and preprocessing ####
 # Load all datasets into a named list
