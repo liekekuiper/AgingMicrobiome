@@ -10,8 +10,8 @@ This repository contains all analysis code accompanying the manuscript:
 This project investigates the relationship between the stool microbiome and human aging across 
 multiple population-based cohorts and sequencing platforms (16S rRNA gene amplicon sequencing 
 and shotgun metagenomics). We identify robust stool microbiome signatures associated with 
-chronological age and frailty across cohorts, and validate these findings for chronological 
-age and mortality in external cohorts.
+chronological age and the frailty index across six US and Dutch large-scale cohorts, and validate 
+these findings for chronological age and mortality in an external cohort.
 
 ---
 
@@ -20,11 +20,11 @@ age and mortality in external cohorts.
 ### `preprocessing/`
 Preprocessing pipelines for raw microbiome sequencing data, designed to run on an HPC cluster 
 using SLURM.
-
-- `16S/` — Pipeline for 16S rRNA gene amplicon sequencing data.  
-  > **Note for consortium analysts:** American cohorts may use [Qiita](https://qiita.ucsd.edu/) 
+> **Note for consortium analysts:** American cohorts may use [Qiita](https://qiita.ucsd.edu/) 
   > for preprocessing. European cohorts cannot use Qiita due to GDPR restrictions on uploading 
   > participant data to external servers and should use this pipeline instead.
+
+- `16S/` — Pipeline for 16S rRNA gene amplicon sequencing data.  
 - `shotgun/` — Pipeline for shotgun metagenomics data
   - `PreProcessingUpdate/` — Scripts to process shotgun data in parallel batches using Bowtie2 
     for alignment and Woltka for taxonomic profiling, substantially reducing processing time 
@@ -39,7 +39,8 @@ run by analysts within each participating cohort.
 - `analysiscode.py` — Main analysis script for HPC/SLURM environments
 - `analysiscode_nonslurm.py` — Version for local/non-HPC use
 - `microbiome_utils.py` — Shared utility functions
-- `submit.sbatch` / `changenames.sbatch` — SLURM submission scripts
+- `submit.sbatch` — SLURM submission scripts
+- `changenames.sbatch` — Script to modify cohort-specific naming
 - `cohort.txt` — Cohort name configuration
 - `mods_agingmicrobiome.txt` — List of models run
 - `outs_agingmicrobiome.txt` — Expected output files
@@ -73,7 +74,7 @@ Analyses were run in the following subgroups:
 
 ### `metaanalyses/`
 Random effects meta-analysis of cohort-specific results and external validation, run centrally 
-after collecting results from all participating cohorts.
+after collecting results from all participating discovery cohorts.
 
 - `MicrobiomeAging_functions.R` — Core R functions shared across all meta-analysis scripts
 - `MetaAnalysis_Genus.R` — Random effects meta-analysis of chronological age and frailty 
@@ -84,10 +85,10 @@ after collecting results from all participating cohorts.
 - `AGORA2_TableFig.R` — Metabolic modeling analyses using the AGORA2 resource to 
   functionally interpret stool microbiome findings
 - `externalvalidation/` — Validation of meta-analysis findings for chronological age and 
-  mortality in independent cohorts:
+  mortality in independent external cohort FINRISK on 16S and metagenomics dataset:
   - `analysiscode_rfile.R` — Analysis script for external validation cohort
   - `microbiome_utils.R` — Utility functions for validation analyses
-  - `Biomarker_TSE_phyloseq.R` — Phyloseq-based biomarker analyses
+  - `Biomarker_TSE_phyloseq.R` — Biomarker analyses for TSE and phyloseq data
   - `ValidationResults.R` — Summary and visualization of validation results
 
 ---
@@ -118,22 +119,17 @@ my_betas <- read.csv("my_betas.csv")
 res <- compute_risk_score(ps, input_type = "phyloseq", betas = my_betas)
 ```
 
-See the package README for full documentation including supported input formats, 
-metadata alignment, and output structure.
+See the package README in the subfolder for full documentation.
 
 ---
 
 ## Citation
 
-If you use this code, please cite:
-
-> Kuiper et al. (2026). *Robust stool microbiome signatures of human aging across cohorts 
-> and sequencing platforms.* [Journal — to be added upon acceptance]
-
+If you use this code, please cite this repository.
 ---
 
 ## Contact
 
 For questions about this repository or the study:  
 **Lieke Kuiper** — l.m.kuiper[at]erasmusmc.nl  
-Department of Epidemiology, Erasmus MC, Rotterdam, the Netherlands
+Department of Internal Medicine, Erasmus MC, Rotterdam, the Netherlands
