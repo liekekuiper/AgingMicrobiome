@@ -1,183 +1,139 @@
-# AgingMicrobiome
-This is the CHARGE collaboration to detect an aging signature in the human stool microbiome. 
+# Aging Microbiome — Code Repository
 
-*Information for the microbiombiom R-package are in the microbiombiom subdirectory*
+This repository contains all analysis code accompanying the manuscript:
 
-American cohorts can use the Qiita environment to perform the preprocessing steps. Preprocessed data is expected to be called `feature.table.gg2-2022.10.qza` and the corresponding taxonomy file `df.gg2.taxonomy.qza`.
+> **Robust stool microbiome signatures of human aging across cohorts and sequencing platforms**  
+> Kuiper et al. (2026)
 
-For European cohorts, this is due to the GDPR forbidden; hence, preprocessing should be performed locally. 
+## Overview
 
-## Stool microbiome data harmonization
+This project investigates the relationship between the stool microbiome and human aging across 
+multiple population-based cohorts and sequencing platforms (16S rRNA gene amplicon sequencing 
+and shotgun metagenomics). We identify robust stool microbiome signatures associated with 
+chronological age and frailty across cohorts, and validate these findings for chronological 
+age and mortality in external cohorts.
 
+---
 
-Data harmonization will take place using GreenGenes2. For both 16S- and shotgun-data this is done in the Qiime2 environment. We first need to install that.
+## Repository structure
 
-```{bash}
-mkdir -p ~/miniconda3
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
-bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
-PATH=$PATH:~/miniconda3/bin/
-conda update conda
-conda install wget
-wget https://data.qiime2.org/distro/core/qiime2-2023.7-py38-linux-conda.yml
-conda env create -n qiime2-2023.7 --file qiime2-2023.7-py38-linux-conda.yml
-wget http://ftp.microbio.me/greengenes_release/2022.10/2022.10.taxonomy.asv.nwk.qza
-conda init bash
-source activate qiime2-2023.7
-pip install q2-greengenes2
+### `preprocessing/`
+Preprocessing pipelines for raw microbiome sequencing data, designed to run on an HPC cluster 
+using SLURM.
+
+- `16S/` — Pipeline for 16S rRNA gene amplicon sequencing data.  
+  > **Note for consortium analysts:** American cohorts may use [Qiita](https://qiita.ucsd.edu/) 
+  > for preprocessing. European cohorts cannot use Qiita due to GDPR restrictions on uploading 
+  > participant data to external servers and should use this pipeline instead.
+- `shotgun/` — Pipeline for shotgun metagenomics data
+  - `PreProcessingUpdate/` — Scripts to process shotgun data in parallel batches using Bowtie2 
+    for alignment and Woltka for taxonomic profiling, substantially reducing processing time 
+    compared to running samples sequentially
+
+---
+
+### `downstreamanalyses/`
+Cohort-level association analyses and cross-cohort harmonization checks. These scripts were 
+run by analysts within each participating cohort.
+
+- `analysiscode.py` — Main analysis script for HPC/SLURM environments
+- `analysiscode_nonslurm.py` — Version for local/non-HPC use
+- `microbiome_utils.py` — Shared utility functions
+- `submit.sbatch` / `changenames.sbatch` — SLURM submission scripts
+- `cohort.txt` — Cohort name configuration
+- `mods_agingmicrobiome.txt` — List of models run
+- `outs_agingmicrobiome.txt` — Expected output files
+- `subsets_agingmicrobiome.txt` — Subgroup definitions (see below)
+
+**Subfolders:**
+- `harmonization_allcohorts/` — Scripts to check harmonization across cohorts and platforms:
+  - PCA of stool microbiome composition across cohorts
+  - UpSet plots showing overlap in detected associations
+- `multiplemethods/` — Comparison of two sequencing methods (16S rRNA gene amplicon sequencing 
+  and shotgun metagenomics) in cohorts where both were available from the same stool samples 
+  (FHS, HCHS/SOL, and MrOS):
+  - PCoA-based comparison across methods
+  - Venn diagrams of overlapping associations across methods
+
+#### Subgroup definitions
+Analyses were run in the following subgroups:
+
+| Subset | Description |
+|--------|-------------|
+| `all` | All participants |
+| `men` | Men only |
+| `women` | Women only |
+| `age_1` | Chronological age ≥ 18 and < 40 |
+| `age_2` | Chronological age ≥ 40 and < 50 |
+| `age_3` | Chronological age ≥ 50 and < 60 |
+| `age_4` | Chronological age ≥ 60 and < 70 |
+| `age_5` | Chronological age ≥ 70 |
+
+---
+
+### `metaanalyses/`
+Random effects meta-analysis of cohort-specific results and external validation, run centrally 
+after collecting results from all participating cohorts.
+
+- `MicrobiomeAging_functions.R` — Core R functions shared across all meta-analysis scripts
+- `MetaAnalysis_Genus.R` — Random effects meta-analysis of chronological age and frailty 
+  associations at the genus level
+- `MetaAnalysis_Species.R` — Random effects meta-analysis of chronological age and frailty 
+  associations at the species level
+- `Table2_3_Fig3.R` — Code to reproduce main manuscript tables (2, 3) and Figure 3
+- `AGORA2_TableFig.R` — Metabolic modeling analyses using the AGORA2 resource to 
+  functionally interpret stool microbiome findings
+- `externalvalidation/` — Validation of meta-analysis findings for chronological age and 
+  mortality in independent cohorts:
+  - `analysiscode_rfile.R` — Analysis script for external validation cohort
+  - `microbiome_utils.R` — Utility functions for validation analyses
+  - `Biomarker_TSE_phyloseq.R` — Phyloseq-based biomarker analyses
+  - `ValidationResults.R` — Summary and visualization of validation results
+
+---
+
+### `microbiomebiom/`
+An R package that provides a unified interface to compute genus-level stool microbiome risk 
+scores (genusFI) from 16S rRNA gene amplicon or shotgun metagenomics data. It supports QIIME2 
+feature tables (`.qza`), phyloseq objects, and TreeSummarizedExperiment objects. The package 
+includes the default GenusFI beta coefficients (`betas_default`) derived from this study, but 
+also accepts custom coefficients, allowing researchers to apply or validate stool microbiome 
+aging scores in their own cohorts.
+
+**Install:**
+```r
+# install.packages("devtools")
+devtools::install_github("liekekuiper/agingmicrobiome/microbiomebiom")
 ```
 
-### Preprocessing 16S-data
-Make a file `manifest` with a column `sample-id` and a column `absolute-filepath` with the sample ids and the paths to the **QC'd forward reads** of each sample. 
-Download the `PreProcessing16S.zip` file. 
+**Quick start:**
+```r
+library(microbiomebiom)
 
-Run `Preprocessing16S.sh` 
+# Compute genusFI score using default coefficients
+res <- compute_risk_score(ps, input_type = "phyloseq")
 
-### Preprocessing Shotgun-data
-Make a file `manifest` with a column `sample-id` and a column `absolute-filepath` with the sample ids and the paths to each sample's **QC'd forward reads**. 
-
-Download the `PreProcessingShotgun.zip` file. 
-
-Install Woltka to be able to run the Web of Life
-```{bash}
-pip install woltka
-```
-You also have to download the Web of Life: [http://ftp.microbio.me/pub/wol2/genomes/] (file named all.fna). Place this file into a directory wol2 within the directory where your files are located. 
-
-This can be done by the following code
-
-```{bash}
-mkdir -p wol2
-cd wol2
-curl -L -O https://ftp.microbio.me/pub/wol2/genomes/all.fna.xz
+# Or supply your own beta coefficients
+my_betas <- read.csv("my_betas.csv")
+res <- compute_risk_score(ps, input_type = "phyloseq", betas = my_betas)
 ```
 
-Run `PreprocessingShotgun.sh` 
+See the package README for full documentation including supported input formats, 
+metadata alignment, and output structure.
 
-### GreenGenes2
-Following the GreenGenes2 harmonization, there are three options available. Please select the one that best suits your data.
-- 16S V4 data: 
-	Download, place in the same folder as preprocessed data, and run `closed_reference16SV4.sbatch` and `taxonomic_table16S.sbatch`
-- 16S data not V4: 
-	Get full backbone of Web of Life
-	 ```{bash}
-	wget http://ftp.microbio.me/greengenes_release/2022.10/2022.10.backbone.full-length.fna.qza
-	``` 
-	Download `get_repset.py`, place in the same folder as preprocessed data, and run `closed_reference16SNonV4.sbatch` and `taxonomic_table16S.sbatch`
-- Shotgun data: 
-	Download, place in the same folder as preprocessed data, and run `closed_referenceShotgun.sbatch` and `taxonomic_tableShotgun.sbatch`
+---
 
-## Associations with aging phenotypes
-Now using the previously created GreenGenes2 called data `feature.table.gg2-2022.10.qza` and taxonomy file `df.gg2.taxonomy.qza` we will run the analyses with the aging phenotypes.
+## Citation
 
-### Metadata
-The Python-script is under the assumption that metadata is a tab-separate .txt document. The first column needs to be sampleid, it is very important that the values in `sampleid` column overlap with the sampleid in the feature-table .qza file.
+If you use this code, please cite:
 
-Run the following commands to make sure all the necessary packages are installed in the qiime2-2023.7 conda environment 
-```
-source activate qiime2-2023.7
-conda install -c conda-forge click scikit-bio pandas numpy biom-format statsmodels lifelines patsy
-```
+> Kuiper et al. (2026). *Robust stool microbiome signatures of human aging across cohorts 
+> and sequencing platforms.* [Journal — to be added upon acceptance]
 
-Change the file paths in changenames.sbatch to start the analyses; you can here also add study-specific covariates that should be considered a factor in the factor line. For instance, if you need the study site to be treated as a factor add it here.
+---
 
-Make sure variables are coded according to the analysis plan:
-* sex: "men" and "women";
-* ppump: proton-pump inhibitor usage, if participant indicates use 1, not 0;
-* metfor: metformin usage, if participant indicates use 1, not 0;
-* statin: stating usage, if participant indicates use 1, not 0;
-* bmi: numeric, as many digits as available;
-* race: as factor, "white" will be reference
-* dietscore: numeric, as many digits as available (Nettleton: DOI: 10.1093/aje/kws297)
-* fiber: numeric, as many digits as available
+## Contact
 
-### Models
-Change models in `mods_agingmicrobiome.txt` to let them include study-specific variables such as Site.
-
-### Outcomes
-Remove outcomes your cohort does not participate in in `outs_agingmicrobiome.txt` 
-
-To clarify:
-* age: chronological age
-* fi: frailty index
-* cont: continuous frailty phenotype
-* mortality: all-cause mortality; If mortality is the outcome of interest the script also expects the variables `age` (chronological age) and `studytime` (time between sampling and censoring) to be present in the meta-data
-
-### Subset
-Remove from the `subsets_agingmicrobiome.txt` file subsets your cohort does not take part in.
-
-To clarify:
-* all: all participants
-* men: men
-* women: women
-* age_1: participants with a chronological age >= 18 & chronological age < 40
-* age_2: participants with a chronological age >= 40 & chronological age < 50
-* age_3: participants with a chronological age >= 50 & chronological age < 60
-* age_4: participants with a chronological age >= 60 & chronological age < 70
-* age_5: participants with a chronological age >= 70
-
-### IMPORTANT
-Please change your cohort name in `cohort.txt` 
-
-### Send back
-Please include a README Word file with the following study descriptive information:
-General	
-* Named individuals with contact details who should be considered in future publications, including: analysts and PIs (if possible indicate their role in your study, so that we can direct any queries to the appropriate person)
-*	Brief description of your study.
-*	Acknowledgements for your study, including funding sources
-
-For analytic sample
-*	Sample size
-*	N of women (%)
-*	N participants living in the same household as other study participants (%)
-*	Mean age (years ± SD)
-*	N PPI users (%)
-*	N participants with missing information on PPI use (%)
-*	N metformin users (%)
-*	N participants with missing information on metformin use (%)
-*	N lipid lowering medication users (%)
-*	N participants with missing information on metformin use (%)
-*	Mean BMI (± SD)
-*	N participants with missing information on BMI
-*	N per ethnic subgroup (%)
-*	N participants with missing information on ethnicity
-*	Mean fiber intake (± SD)
-*	N participants with missing information on fiber intake
-*	Mean diet score (± SD)
-*	N participants with missing information on diet score
-
-For microbiome data
-*	Sample collection.
-*	Microbial DNA isolation
-*	DNA sequencing
-
-For phenotypes
-*	Chronological age:
-  *	Minimal age
-  *	Maximum age
-  *	Median age
-  *	IQR age
-*	Frailty index
-  *	List of variables included in frailty index
-  *	Mean frailty index (± SD)
-  *	Minimal frailty index
-  *	Maximum frailty index
-  *	Median frailty index
-  *	IQR frailty index
-*	Continuous frailty phenotype
-  *	Mean continuous frailty phenotype (± SD)
-  *	Minimal continuous frailty phenotype
-  *	Maximum continuous frailty phenotype
-  *	Median continuous frailty phenotype
-  *	IQR continuous frailty phenotype 
-*	All-cause mortality
-  *	Number of deaths (%)
-  *	Number of people lost to follow-up (%)
-  *	Mean follow-up time (± SD)
-  *	Minimal follow-up time
-  *	Maximum follow-up time
-  *	Median follow-up time
-  *	IQR follow-up time
-
-**Send the document with study participants with descriptives and your used scripts back to l.m.kuiper[at]erasmusmc.nl**
-
+For questions about this repository or the study:  
+**Lieke Kuiper** — l.m.kuiper[at]erasmusmc.nl  
+Department of Epidemiology, Erasmus MC, Rotterdam, the Netherlands
