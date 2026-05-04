@@ -10,16 +10,20 @@ This repository contains all analysis code accompanying the manuscript:
 This project investigates the relationship between the stool microbiome and human aging across 
 multiple population-based cohorts and sequencing platforms (16S rRNA gene amplicon sequencing 
 and shotgun metagenomics). We identify robust stool microbiome signatures associated with 
-chronological age and the frailty index across six US and Dutch large-scale cohorts, and validate 
-these findings for chronological age and mortality in an external cohort.
+chronological age and the frailty index across six US and Dutch large-scale cohorts ([Doetinchem Cohort Study](https://doi.org/10.1093/ije/dym292),
+[Framingham Heart Study](https://doi.org/10.1093/ije/dyv337), [Hispanic Community Health Study/Study of Latinos](https://doi.org/10.1016/j.annepidem.2010.03.015)
+[Lifelines](https://doi.org/10.1093/ije/dyab257), [The Osteoporotic Fractures in Men (MrOS) Cohort](https://doi.org/10.1002/jbmr.4518), and
+[the Rotterdam Study](https://doi.org/10.1007/s10654-023-01094-1)), and validate 
+these findings for chronological age and mortality in an external cohort [FINRISK](https://doi.org/10.1093/ije/dyx239). 
+Furthermore, we used metabolic simulations in [the Study of Health in Pomerania](https://doi.org/10.1093/ije/dyac034)to link discovered microbial composition to metabolic function.
 
 ---
 
 ## Repository structure
 
 ### `preprocessing/`
-Preprocessing pipelines for raw microbiome sequencing data, designed to run on an HPC cluster 
-using SLURM.
+Preprocessing pipelines for raw microbiome sequencing data into [Greengenes2](https://doi.org/10.1038/s41587-023-01845-1) harmonized data,
+designed to run on an HPC cluster using SLURM.
 > **Note for consortium analysts:** American cohorts may use [Qiita](https://qiita.ucsd.edu/) 
   > for preprocessing. European cohorts cannot use Qiita due to GDPR restrictions on uploading 
   > participant data to external servers and should use this pipeline instead.
