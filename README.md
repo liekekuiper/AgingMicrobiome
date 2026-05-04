@@ -15,7 +15,7 @@ chronological age and the frailty index across six US and Dutch large-scale coho
 [Lifelines](https://doi.org/10.1093/ije/dyab257), [The Osteoporotic Fractures in Men (MrOS) Cohort](https://doi.org/10.1002/jbmr.4518), and
 [the Rotterdam Study](https://doi.org/10.1007/s10654-023-01094-1)), and validate 
 these findings for chronological age and mortality in an external cohort [FINRISK](https://doi.org/10.1093/ije/dyx239). 
-Furthermore, we used metabolic simulations in [the Study of Health in Pomerania](https://doi.org/10.1093/ije/dyac034)to link discovered microbial composition to metabolic function.
+Furthermore, we used metabolic simulations in [the Study of Health in Pomerania](https://doi.org/10.1093/ije/dyac034) to link discovered microbial composition to metabolic function.
 
 ---
 
