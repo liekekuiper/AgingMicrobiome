@@ -11,7 +11,7 @@ This project investigates the relationship between the stool microbiome and huma
 multiple population-based cohorts and sequencing platforms (16S rRNA gene amplicon sequencing 
 and shotgun metagenomics). We identify robust stool microbiome signatures associated with 
 chronological age and the frailty index across six US and Dutch large-scale cohorts ([Doetinchem Cohort Study](https://doi.org/10.1093/ije/dym292),
-[Framingham Heart Study](https://doi.org/10.1093/ije/dyv337), [Hispanic Community Health Study/Study of Latinos](https://doi.org/10.1016/j.annepidem.2010.03.015)
+[Framingham Heart Study](https://doi.org/10.1093/ije/dyv337), [Hispanic Community Health Study/Study of Latinos](https://doi.org/10.1016/j.annepidem.2010.03.015),
 [Lifelines](https://doi.org/10.1093/ije/dyab257), [the Osteoporotic Fractures in Men (MrOS) Cohort](https://doi.org/10.1002/jbmr.4518), and
 [the Rotterdam Study](https://doi.org/10.1007/s10654-023-01094-1)), and validate 
 these findings for chronological age and mortality in an external cohort [FINRISK](https://doi.org/10.1093/ije/dyx239). 
