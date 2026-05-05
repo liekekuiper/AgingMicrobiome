@@ -64,7 +64,7 @@ for(c in 1:length(cohort_file)){
     labs(
       x     = paste0("PCo1 (", round(100 * pcoa$data$ProportionExplained[, 1], 2), "%)"),
       y     = paste0("PCo2 (", round(100 * pcoa$data$ProportionExplained[, 2], 2), "%)"),
-      title = cohort_label  ) +
+      title = cohort_label[c]  ) +
     theme_minimal(base_size = 12, base_family = "sans") +
     theme(
       plot.title      = element_text(face = "plain", hjust = 0.5, family = "sans"),
