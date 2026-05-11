@@ -9,6 +9,7 @@
 ### If you want functions run the following two lines (without the #) in your wol2 folder
 # wget -r -np -nH --cut-dirs=2 http://ftp.microbio.me/pub/wol2/function/
 # wget -r -np -nH --cut-dirs=2 http://ftp.microbio.me/pub/wol2/genomes/
+# wget -r -np -nH --cut-dirs=2 http://ftp.microbio.me/pub/wol2/proteins/
 
 #if not turn on --no-fun
 
