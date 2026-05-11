@@ -29,14 +29,14 @@ pip install q2-greengenes2
 
 ### Preprocessing 16S-data
 Make a file `manifest` with a column `sample-id` and a column `absolute-filepath` with the sample ids and the paths to the **QC'd forward reads** of each sample. 
-Download the `PreProcessing16S.zip` file. 
+Use the `16S/PreProcessing16S` directory. 
 
 Run `Preprocessing16S.sh` 
 
 ### Preprocessing Shotgun-data
 Make a file `manifest` with a column `sample-id` and a column `absolute-filepath` with the sample ids and the paths to each sample's **QC'd forward reads**. 
 
-Download the `PreProcessingShotgun.zip` file. 
+Use the `shotgun/PreProcessingShotgun` directory. 
 
 Install Woltka to be able to run the Web of Life
 ```{bash}
