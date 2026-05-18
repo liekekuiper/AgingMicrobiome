@@ -8,13 +8,17 @@
 #### This file uses the manifest file to create batches to run woltka.sbatch on
 #### woltka.sbatch needs .sam files which are too large for most HPC-clusters
 #### Hence, we split them in batches and make them into .bam files after they are run
+# What it does:
+# Reads the manifest file and runs bowtie2 for each sample in the batch.
+# Produces .sam files in the batch align directory.
+# .sam files are converted to .bam by sam2bam_batch.sh after woltka completes.
 
 set -euo pipefail
 
 MANIFEST=manifest
 BATCH_SIZE=10
-
-BATCH_ID=$SLURM_ARRAY_TASK_ID      # 1-based
+DB=/path/to/bowtie2/db         # Change to your bowtie2 database index path
+BATCH_ID=$SLURM_ARRAY_TASK_ID  # 1-based batch index passed via job array
 BATCH_DIR=$(printf "Batch%02d" "$BATCH_ID")
 ALIGN="$BATCH_DIR/align"
 
@@ -30,9 +34,7 @@ for ((i=START; i<=END && i<=${#ROWS[@]}; i++)); do
   ROW="${ROWS[$((i - 1))]}"
   SAMPLE=$(cut -f1 <<< "$ROW")
   READS=$(cut -f2 <<< "$ROW")
-
   OUT="$ALIGN/$SAMPLE.sam"
-  [ -f "$OUT" ] && continue
-
-  bowtie2 -x db -U "$READS" -S "$OUT" -p 16
+  [ -f "$OUT" ] && continue    # Skip if output already exists
+  bowtie2 -x "$DB" -U "$READS" -S "$OUT" -p 16
 done
