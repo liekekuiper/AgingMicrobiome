@@ -29,10 +29,9 @@ designed to run on an HPC cluster using SLURM.
   > participant data to external servers and should use this pipeline instead.
 
 - `16S/` — Pipeline for 16S rRNA gene amplicon sequencing data.  
-- `shotgun/` — Pipeline for shotgun metagenomics data
-  - `PreProcessingUpdate/` — Scripts to process shotgun data in parallel batches using Bowtie2 
-    for alignment and Woltka for taxonomic profiling, substantially reducing processing time 
-    compared to running samples sequentially
+- `shotgun/` — Pipelines for shotgun metagenomics data (see shotgun/README.md for details on the two subfolders below)
+  - `PreProcessingShotgun/` — Original pipeline used to generate the shotgun metagenomics results reported in the manuscript (OGU-level classification only, --no-tax --no-fun).
+  - `PreProcessingShotgunUpdate/` — Faster, streaming version for processing additional cohort data: no intermediate .sam files, work runs in parallel batches and is automatically merged. Also adds ORF-level and full functional profiling (UniRef, GO, Pfam, KEGG, MetaCyc, eggNOG) on top of the OGU-level classification the original already did; still no ranked taxonomic classification (phylum...species), same as the original.
 
 ---
 
