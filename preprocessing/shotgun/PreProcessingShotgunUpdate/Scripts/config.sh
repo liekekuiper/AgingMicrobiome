@@ -26,6 +26,13 @@ LOGS_ROOT=Logs
 # --mem note in merge_batches.sh).
 MERGE_ORF=
 
+# Off by default: merge_batches.sh skips any table that already exists
+# under Merged/Output/ (e.g. after flipping MERGE_ORF on and re-sbatching
+# merge_batches.sh directly, only the newly-enabled orf.biom gets merged).
+# Set to 1 to force a full re-merge of everything instead -- e.g. after
+# fixing and re-running one specific batch.
+FORCE_MERGE=
+
 # On by default: after merge_batches.sh finishes, also import the merged
 # output.biom into QIIME2 as a .qza (make_q2_import.sh). Set to empty ("")
 # if you don't want a .qza -- submit_batches.sh/run_pipeline.sh will then
