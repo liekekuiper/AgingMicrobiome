@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -c 4
-#SBATCH --mem 300G
+#SBATCH --mem 126G
 #SBATCH -J merge_batches
 #SBATCH -o slurm-%x-%j.out
 #SBATCH -e slurm-%x-%j.err
@@ -8,7 +8,7 @@
 #### land in $LOGS_ROOT; only used as-is if you sbatch this file directly.)
 #### Memory note: merging orf.biom across all batches (ORF-level, no
 #### collapsing) produces a huge matrix -- at 1347 samples this was already
-#### 3.5M+ features and OOM-killed at 32G. 300G is a starting guess; check
+#### 3.5M+ features and OOM-killed at 32G. 126G is a starting guess; check
 #### your cluster's node memory limits and adjust, and watch `seff <jobid>`
 #### / sacct after a run to see actual peak (MaxRSS) and tune from there.
 #### The other tables (uniref/go/pfam/kegg/metacyc/eggnog, all collapsed to
@@ -35,6 +35,15 @@
 ####
 #### Run this after all align_classify_batch.sh array tasks have finished
 #### (submit_batches.sh wires up this dependency automatically).
+####
+#### Resumable: a table already present under Merged/Output/ is skipped on
+#### rerun, not recomputed. This is what makes it cheap to flip MERGE_ORF
+#### on later and re-sbatch this script directly (without going through
+#### submit_batches.sh/run_pipeline.sh, and without re-running any
+#### batches) -- only the newly-enabled orf.biom gets merged, everything
+#### already sitting in Merged/Output/ is left untouched. Set
+#### FORCE_MERGE=1 in config.sh if you ever need to force a full re-merge
+#### of everything (e.g. after fixing and re-running one specific batch).
 set -euo pipefail
 source "$SLURM_SUBMIT_DIR/config.sh"
 cd "$SLURM_SUBMIT_DIR"
@@ -86,8 +95,14 @@ echo "# "$(date)
 # kill every table queued after it, leaving Merged/Output only partially
 # populated with no explanation.
 FAILED=()
+SKIPPED=()
 mapfile -t RELS < <(printf '%s\n' "${!SEEN[@]}" | sort)
 for rel in "${RELS[@]}"; do
+  if [[ -z "${FORCE_MERGE:-}" ]] && [[ -f "$MERGED/$rel" ]]; then
+    SKIPPED+=("$rel")
+    continue
+  fi
+
   paths=()
   for ((b=1; b<=NBATCH; b++)); do
     p="$OUTPUT_ROOT_ABS/$(printf "Batch%02d" "$b")/Output/$rel"
@@ -121,7 +136,8 @@ for rel in "${RELS[@]}"; do
   fi
 done
 
-echo "# Merge completed: $(( ${#RELS[@]} - ${#FAILED[@]} ))/${#RELS[@]} tables merged successfully into $MERGED/"
+DONE=$(( ${#RELS[@]} - ${#FAILED[@]} - ${#SKIPPED[@]} ))
+echo "# Merge completed: $DONE table(s) merged, ${#SKIPPED[@]} already up to date (skipped), out of ${#RELS[@]} total, into $MERGED/"
 if [[ ${#FAILED[@]} -gt 0 ]]; then
   echo "# ${#FAILED[@]} table(s) FAILED to merge -- see WARNING lines above for the underlying error:" >&2
   printf '#   %s\n' "${FAILED[@]}" >&2
